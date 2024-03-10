@@ -58,7 +58,7 @@
       state: latest
   - name: Nginx configuration file is copied
     copy:
-      src: /path/to/nginx.conf
+      src: managed-host/alpine/loadbalancer/nginx.conf
       dest: /etc/nginx/nginx.conf
   - name: Nginx service is started
     service:
