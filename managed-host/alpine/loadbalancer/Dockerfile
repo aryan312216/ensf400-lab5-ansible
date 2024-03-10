@@ -1,5 +1,9 @@
 # Use alpine-systemd as base image
 FROM alpine-systemd as loadbalancer
+# Use jrei/systemd-alpine as base image
+# FROM jrei/systemd-alpine as loadbalancer
+
+# Rest of your Dockerfile...
 
 # Install necessary packages
 RUN apk update && \
@@ -22,3 +26,4 @@ ENTRYPOINT ["/entry.sh"]
 
 # Start SSH and Nginx
 CMD ["/usr/sbin/sshd", "-D", "-e", "-f", "/etc/ssh/sshd_config", "&&", "nginx", "-g", "'daemon off;'"]
+# CMD /usr/sbin/sshd -D -e -f /etc/ssh/sshd_config && nginx -g 'daemon off;'
