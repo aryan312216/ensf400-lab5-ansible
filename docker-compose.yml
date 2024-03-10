@@ -42,7 +42,7 @@ services:
   
   loadbalancer:
     build: 
-      context: ./loadbalancer
+      context: managed-host/alpine/loadbalancer
     restart: unless-stopped
     network_mode: "bridge"
     environment:
