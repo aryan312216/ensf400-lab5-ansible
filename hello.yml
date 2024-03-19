@@ -1,4 +1,28 @@
-# First Play
+---
+- name: Play - Install and configure Nginx as a LoadBalancer
+  hosts: loadbalancer
+  become: yes
+  tasks:
+    - name: Update cache
+      apt: update_cache=yes   
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+    - name: Copy the Nginx config file to /etc/nginx/sites-available
+      copy:
+        src: /path/to/your/nginx.conf
+        dest: /etc/nginx/sites-available/default
+    - name: Create symlink of the config file at /etc/nginx/sites-enabled
+      file:
+        src: /etc/nginx/sites-available/default
+        dest: /etc/nginx/sites-enabled/default
+        state: link
+    - name: Restart nginx to apply changes
+      service:
+        name: nginx
+        state: restarted
+
 - name: Play - Handle Files in all hosts
   hosts: all
   tasks:
@@ -8,7 +32,6 @@
       dest: /family.txt
       mode: '777'
 
-# Second play
 - name: Play - for Alpines Nodejs app
   hosts: app_group
   tasks:
@@ -47,20 +70,29 @@
     command: forever start /node-app/app.js
     when: "forever_list.stdout.find('/node-app/app.js') == -1"
 
-# Third play
-- name: Play - for Nginx load balancer
-  hosts: loadbalancer
+- name: Play - Install and configure Nginx as a LoadBalancer
+  hosts: localhost
+  become: yes
   tasks:
-  - name: Nginx is installed
-    apk:
-      name: nginx
-      update_cache: yes
-      state: latest
-  - name: Nginx configuration file is copied
-    copy:
-      src: managed-host/alpine/loadbalancer/nginx.conf
-      dest: /etc/nginx/nginx.conf
-  - name: Nginx service is started
-    service:
-      name: nginx
-      state: started
+    - name: Update cache
+      apt: update_cache=yes   
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+    - name: Copy the Nginx config file to /etc/nginx/sites-available
+      copy:
+        src: managed-host/alpine/loadbalancer/nginx.conf
+        dest: /etc/nginx/sites-available/default
+      become: yes
+    - name: Create symlink of the config file at /etc/nginx/sites-enabled
+      file:
+        src: /etc/nginx/sites-available/default
+        dest: /etc/nginx/sites-enabled/default
+        state: link
+      become: yes
+    - name: Restart nginx to apply changes
+      service:
+        name: nginx
+        state: restarted
+      become: yes

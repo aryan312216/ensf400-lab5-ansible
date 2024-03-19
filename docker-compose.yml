@@ -56,8 +56,8 @@ services:
       - ./secrets/id_rsa_container.pub:/root/.ssh/authorized_keys
       - ssh-keys:/etc/ssh/keys
     ports:
-      - 80:80
-      - 2226:2226
+      - 8080:80
+      - 2226:22
     networks:
       - app-network
 volumes:
